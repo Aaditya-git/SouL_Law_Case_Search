@@ -38,3 +38,16 @@ To install these dependencies, run the following command:
 
 ```bash
 pip install fastapi[all] elasticsearch uvicorn
+
+
+## Running the Project
+
+To get the project up and running, follow these steps:
+
+### 1. **Start Elasticsearch**
+
+You need to have an Elasticsearch instance running locally or remotely. The easiest way to do this is by using Docker. Run the following command to start Elasticsearch:
+
+```bash
+docker run -p 9200:9200 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:8.8.1
+

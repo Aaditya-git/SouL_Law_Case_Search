@@ -9,7 +9,7 @@ app = FastAPI()
 # Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust this as needed
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -22,7 +22,7 @@ es = Elasticsearch(
     verify_certs=False
 )
 
-# API Routes
+
 @app.get("/cases/")
 async def search_cases(query: str, country: str = None):
     """
@@ -45,18 +45,18 @@ async def search_cases(query: str, country: str = None):
             }
         }
 
-        # Add country filter if provided
+        
         if country:
             query_body["query"]["bool"]["filter"].append({"term": {"country": country}})
 
         response = es.search(index="case_laws", body=query_body)
         
-        # Return a list of cases including mock rating
+     
         cases = [
             {
                 **hit["_source"],
-                "rating": 4,  # You can set mock rating here, ideally you would have this from your dataset
-                "case_link": hit["_source"].get("case_link", "#")  # Ensure case link exists
+                "rating": 4,  
+                "case_link": hit["_source"].get("case_link", "#") 
             }
             for hit in response["hits"]["hits"]
         ]

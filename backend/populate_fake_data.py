@@ -6,7 +6,7 @@ ELASTIC_URL = "https://localhost:9200"
 ELASTIC_USER = "elastic"
 ELASTIC_PASSWORD = "ADyv8-XWV6=RGfASK9XE"
 
-n
+
 es = Elasticsearch(
     ELASTIC_URL,
     basic_auth=(ELASTIC_USER, ELASTIC_PASSWORD),

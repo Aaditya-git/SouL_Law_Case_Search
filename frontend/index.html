@@ -4,9 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legal Case Law Search</title>
-    <link rel="stylesheet" href="styles.css">
-</head> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://source.unsplash.com/1600x900/?law,justice') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.7);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+            font-family: 'Merriweather', serif;
+            color: #fff;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        main {
+            margin-top: 20px;
+        }
+
+        .search-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .search-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search-box input, .search-box select, .search-box button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background-color: #45a049;
+        }
+
+        .results-section {
+            margin-top: 20px;
+        }
+
+        .results-section h2 {
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .case-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .case-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .case-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .case-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .case-card p {
+            margin: 5px 0;
+            font-size: 0.95rem;
+        }
+
+        .case-card a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .case-card a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
 <body>
+    <div class="overlay"></div>
     <div class="container">
         <header>
             <h1>Legal Case Law Search</h1>
@@ -17,38 +172,38 @@
             <section class="search-section">
                 <h2>Find Relevant Cases</h2>
                 <div class="search-box">
-                    <input type="text" id="searchQuery" placeholder="Search by keywords or topics..." required>
+                    <input type="text" id="searchQuery" placeholder="Enter keywords or topics..." required>
                     <select id="countryFilter">
-                        <option value="">Select Country</option>
+                        <option value="">All Countries</option>
                         <option value="USA">USA</option>
                         <option value="Canada">Canada</option>
                         <option value="India">India</option>
                     </select>
-                    <button onclick="searchCases()">Search</button>
+                    <button onclick="searchCases()">Search <i class="fas fa-search"></i></button>
                 </div>
             </section>
 
             <!-- Results section -->
             <section class="results-section">
                 <h2>Search Results</h2>
-                <div id="caseResults" class="case-results"></div>
+                <div id="caseResults" class="case-results">
+                    <p>No results found. Start a search!</p>
+                </div>
             </section>
         </main>
 
         <footer>
-            <p>&copy; 2024 Legal Case Law Search Platform</p>
+            <p>&copy; 2024 Legal Case Law Search Platform. All rights reserved.</p>
         </footer>
     </div>
 
     <script>
-        const apiUrl = "http://127.0.0.1:8000"; // FastAPI backend URL
+        const apiUrl = "http://127.0.0.1:8000"; // Replace with your backend URL
 
-        // Search for cases using natural language
         async function searchCases() {
             const query = document.getElementById('searchQuery').value;
             const country = document.getElementById('countryFilter').value;
 
-            // If the query is empty, show a message
             if (!query) {
                 alert("Please enter a search query.");
                 return;
@@ -56,15 +211,12 @@
 
             const response = await fetch(`${apiUrl}/cases/?query=${query}&country=${country}`);
             const result = await response.json();
-
-            // Display the case results
-            displayCases(result.cases);
+            displayCases(result.cases || []);
         }
 
-        // Function to display case results
         function displayCases(cases) {
             const caseResultsDiv = document.getElementById('caseResults');
-            caseResultsDiv.innerHTML = ''; // Clear previous results
+            caseResultsDiv.innerHTML = '';
 
             if (cases.length === 0) {
                 caseResultsDiv.innerHTML = '<p>No cases found.</p>';
